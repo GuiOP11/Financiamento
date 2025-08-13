@@ -32,6 +32,10 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
+      <Button
+        title="Ir para Tela Inicial"
+        onPress={() => navigation.navigate('Inicial')}
+      />
     </View>
   );
 }
