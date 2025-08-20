@@ -8,7 +8,7 @@ import CadastroScreen from '../screens/CadastroScreen';
 
 const Stack = createNativeStackNavigator();
 
-export default function App() {
+export default function app() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
