@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
   const handleLogin = () => {
+    // Substituído 'alert' por 'Alert' do React Native para melhor compatibilidade.
+    Alert.alert('Sucesso', 'Login realizado!');
     // Aqui você pode conectar com seu backend
-    alert('Login realizado!');
   };
 
   return (
@@ -29,12 +30,21 @@ export default function LoginScreen({ navigation }) {
         secureTextEntry
       />
       <Button title="Entrar" onPress={handleLogin} />
+      
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
+      
+
       <Button
         title="Ir para Tela Inicial"
         onPress={() => navigation.navigate('Inicial')}
+      />
+
+   
+      <Button
+        title="Cadastrar Carro"
+        onPress={() => navigation.navigate('Cadastrocarro')}
       />
     </View>
   );
