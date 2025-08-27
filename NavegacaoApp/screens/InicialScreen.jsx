@@ -83,7 +83,7 @@ export default function HomeScreen({ navigation }) {
       {/* Barra de busca */}
       <TextInput
         style={styles.searchBar}
-        placeholder="Buscar carros, motos..."
+        placeholder="Buscar carros..."
         value={search}
         onChangeText={setSearch}
       />
@@ -95,9 +95,6 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
         <TouchableOpacity style={styles.categoryButton}>
           <Text style={styles.categoryText}>Usados</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Motos</Text>
         </TouchableOpacity>
       </View>
 

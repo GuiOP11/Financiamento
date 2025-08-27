@@ -36,9 +36,6 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
-        <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
-      </TouchableOpacity>
       
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Inicial')}>
         <Text style={styles.buttonText}>Ir para Tela Inicial</Text>
@@ -48,6 +45,9 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Cadastrar Carro</Text>
       </TouchableOpacity>
       
+      <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>    
+        <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
+      </TouchableOpacity>
     </View>
   );
 }
