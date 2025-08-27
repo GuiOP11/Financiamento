@@ -1,20 +1,22 @@
 const { Sequelize } = require('sequelize');
+const path = require('path');
 
-
-const sequelize = new Sequelize('financiamento', 'postgres', 'postgres', {
-  host: 'localhost',
-  dialect: 'postgres',
-  port: 5432, // Porta padrão do PostgreSQL
-  logging: false, // Define para 'true' se quiser ver as queries SQL no console
+// Cria a conexão com o SQLite
+// O banco de dados será um arquivo chamado 'financiamento.sqlite'
+// na raiz da sua pasta 'backend'
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: path.join(__dirname, 'financiamento.sqlite'),
+  logging: false, // Opcional: para não poluir o console com as queries
 });
 
 async function connectDB() {
   try {
     await sequelize.authenticate();
-    console.log('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
+    console.log('Conexão com o banco de dados SQLite estabelecida com sucesso.');
   } catch (error) {
     console.error('Erro ao conectar ao banco de dados:', error);
-    process.exit(1); // Sai do processo em caso de erro na conexão
+    process.exit(1);
   }
 }
 
