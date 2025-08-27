@@ -5,7 +5,10 @@ export default function CadastroCarroScreen({ navigation }) {
   // Estados para armazenar os dados do carro
   const [modelo, setModelo] = useState('');
   const [marca, setMarca] = useState('');
+  const [cor, setCor] = useState('');
   const [ano, setAno] = useState('');
+  const [disponivel, setDisponivel] = useState('');
+  const [km, setKm] = useState('');
   const [placa, setPlaca] = useState('');
 
   // Função para lidar com o cadastro do carro
@@ -63,11 +66,35 @@ export default function CadastroCarroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
+        placeholder="Cor"
+        value={cor}
+        onChangeText={setCor}
+        autoCapitalize="words"
+      />
+
+      <TextInput
+        style={styles.input}
         placeholder="Ano"
         value={ano}
         onChangeText={setAno}
         keyboardType="numeric"
         maxLength={4} 
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Disponível"
+        value={disponivel}
+        onChangeText={setDisponivel}
+        autoCapitalize="words"
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Km"
+        value={km}
+        onChangeText={setKm}
+        autoCapitalize="numeric"
       />
 
       <TextInput

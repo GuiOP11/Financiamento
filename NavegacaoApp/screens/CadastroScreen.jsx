@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function CadastroScreen({ navigation }) {
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [saldo, setSaldo] = useState('');
 
   const handleCadastro = () => {
     // Aqui você pode conectar com seu backend
@@ -13,6 +15,14 @@ export default function CadastroScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Cadastro</Text>
+
+      <TextInput
+        style={styles.input}
+        placeholder="Nome"
+        value={nome}
+        onChangeText={setNome}
+      />
+
       <TextInput
         style={styles.input}
         placeholder="E-mail"
@@ -28,6 +38,14 @@ export default function CadastroScreen({ navigation }) {
         onChangeText={setSenha}
         secureTextEntry
       />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Coloque seu saldo"
+        value={saldo}
+        onChangeText={setSaldo}
+      />
+
       <Button title="Cadastrar" onPress={handleCadastro} />
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>
