@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function CadastroCarroScreen({ navigation }) {
   // Estados para armazenar os dados do carro
@@ -15,7 +15,7 @@ export default function CadastroCarroScreen({ navigation }) {
   const handleCadastroCarro = () => {
     // Verificação básica dos campos
     if (!modelo || !marca || !ano || !placa) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos.');
+      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios: Modelo, Marca, Ano e Placa.');
       return;
     }
 
@@ -24,7 +24,10 @@ export default function CadastroCarroScreen({ navigation }) {
     const carroData = {
       modelo: modelo,
       marca: marca,
+      cor: cor,
       ano: parseInt(ano), 
+      disponivel: disponivel,
+      km: km,
       placa: placa,
     };
 
@@ -37,11 +40,14 @@ export default function CadastroCarroScreen({ navigation }) {
     // Limpa os campos após o envio
     setModelo('');
     setMarca('');
+    setCor('');
     setAno('');
+    setDisponivel('');
+    setKm('');
     setPlaca('');
 
     // Exemplo de navegação para a tela inicial após o cadastro
-    // navigation.navigate('Home'); 
+    // navigation.navigate('Inicial'); 
   };
 
   return (
@@ -83,10 +89,9 @@ export default function CadastroCarroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Disponível"
+        placeholder="Disponível (sim/não)"
         value={disponivel}
         onChangeText={setDisponivel}
-        autoCapitalize="words"
       />
 
       <TextInput
@@ -94,7 +99,7 @@ export default function CadastroCarroScreen({ navigation }) {
         placeholder="Km"
         value={km}
         onChangeText={setKm}
-        autoCapitalize="numeric"
+        keyboardType="numeric"
       />
 
       <TextInput
@@ -106,9 +111,10 @@ export default function CadastroCarroScreen({ navigation }) {
         maxLength={7} 
       />
       
-      <Button title="Cadastrar Carro" onPress={handleCadastroCarro} />
+      <TouchableOpacity style={styles.button} onPress={handleCadastroCarro}>
+        <Text style={styles.buttonText}>Cadastrar Carro</Text>
+      </TouchableOpacity>
 
-      {/* Exemplo de link para voltar, caso necessário */}
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Voltar</Text>
       </TouchableOpacity>
@@ -121,7 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff4dbff', // Padrão de cor de fundo
     padding: 20,
   },
   title: {
@@ -138,9 +144,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 5,
   },
+  button: {
+    width: '100%',
+    backgroundColor: '#0b4200ff', // Padrão de cor do botão
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#FFFFFF', // Cor do texto do botão
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   link: {
     marginTop: 16,
-    color: '#007bff',
+    color: '#8A9A5B', // Padrão de cor do link
     textDecorationLine: 'underline',
   },
 });

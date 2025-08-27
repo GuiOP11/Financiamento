@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
   const handleLogin = () => {
-    // Substituído 'alert' por 'Alert' do React Native para melhor compatibilidade.
+    // Alerta de sucesso para simular o login
     Alert.alert('Sucesso', 'Login realizado!');
-    // Aqui você pode conectar com seu backend
+    // Aqui é onde a lógica de conexão com o backend será implementada
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
+      
       <TextInput
         style={styles.input}
         placeholder="E-mail"
@@ -22,6 +23,7 @@ export default function LoginScreen({ navigation }) {
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      
       <TextInput
         style={styles.input}
         placeholder="Senha"
@@ -29,33 +31,37 @@ export default function LoginScreen({ navigation }) {
         onChangeText={setSenha}
         secureTextEntry
       />
-      <Button title="Entrar" onPress={handleLogin} />
+      
+      <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        <Text style={styles.buttonText}>Entrar</Text>
+      </TouchableOpacity>
       
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
       
-
-      <Button
-        title="Ir para Tela Inicial"
-        onPress={() => navigation.navigate('Inicial')}
-      />
-
-   
-      <Button
-        title="Cadastrar Carro"
-        onPress={() => navigation.navigate('Cadastrocarro')}
-      />
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Inicial')}>
+        <Text style={styles.buttonText}>Ir para Tela Inicial</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroCarro')}>
+        <Text style={styles.buttonText}>Cadastrar Carro</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 }
+
+// ---
+// Estilos
+// ---
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff4dbff',
     padding: 20,
   },
   title: {
@@ -72,9 +78,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 5,
   },
+  button: {
+    width: '100%',
+    backgroundColor: '#0b4200ff',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   link: {
     marginTop: 16,
-    color: '#007bff',
+    color: '#8A9A5B',
     textDecorationLine: 'underline',
   },
 });

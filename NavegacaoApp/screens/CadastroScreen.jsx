@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 export default function CadastroScreen({ navigation }) {
   const [nome, setNome] = useState('');
@@ -8,8 +8,9 @@ export default function CadastroScreen({ navigation }) {
   const [saldo, setSaldo] = useState('');
 
   const handleCadastro = () => {
+    // Alerta de sucesso para simular o cadastro
+    Alert.alert('Sucesso', 'Cadastro realizado!');
     // Aqui você pode conectar com seu backend
-    alert('Cadastro realizado!');
   };
 
   return (
@@ -44,12 +45,17 @@ export default function CadastroScreen({ navigation }) {
         placeholder="Coloque seu saldo"
         value={saldo}
         onChangeText={setSaldo}
+        keyboardType="numeric"
       />
 
-      <Button title="Cadastrar" onPress={handleCadastro} />
+      <TouchableOpacity style={styles.button} onPress={handleCadastro}>
+        <Text style={styles.buttonText}>Cadastrar</Text>
+      </TouchableOpacity>
+
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>
       </TouchableOpacity>
+      
     </View>
   );
 }
@@ -59,7 +65,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#fff4dbff', // Mantido o mesmo padrão de cor de fundo
     padding: 20,
   },
   title: {
@@ -76,9 +82,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     borderRadius: 5,
   },
+  button: {
+    width: '100%',
+    backgroundColor: '#0b4200ff', // Cor de fundo do botão
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#FFFFFF', // Cor do texto do botão
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
   link: {
     marginTop: 16,
-    color: '#007bff',
+    color: '#8A9A5B', // Mantido o mesmo padrão de cor do link
     textDecorationLine: 'underline',
   },
 });
