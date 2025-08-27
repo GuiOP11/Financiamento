@@ -18,7 +18,7 @@ const User = db.define('User', {
   },
 }, {
   timestamps: true,
-  tableName: 'users',
+  tableName: 'usuario',
 });
 
 export default User;

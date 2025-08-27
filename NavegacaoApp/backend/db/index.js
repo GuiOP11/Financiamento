@@ -1,21 +1,25 @@
-import { Pool } from 'pg';
+const { Sequelize } = require('sequelize');
 
-const pool = new Pool({
-  user: 'your_username', // replace with your PostgreSQL username
+
+const sequelize = new Sequelize('financiamento', 'postgres', 'postgres', {
   host: 'localhost',
-  database: 'your_database', // replace with your database name
-  password: 'your_password', // replace with your PostgreSQL password
-  port: 5432, // default PostgreSQL port
+  dialect: 'postgres',
+  port: 5432, // Porta padrão do PostgreSQL
+  logging: false, // Define para 'true' se quiser ver as queries SQL no console
 });
 
-const connectDB = async () => {
+async function connectDB() {
   try {
-    await pool.connect();
-    console.log('Connected to PostgreSQL database');
+    await sequelize.authenticate();
+    console.log('Conexão com o banco de dados PostgreSQL estabelecida com sucesso.');
   } catch (error) {
-    console.error('Database connection error:', error);
-    process.exit(1);
+    console.error('Erro ao conectar ao banco de dados:', error);
+    process.exit(1); // Sai do processo em caso de erro na conexão
   }
-};
+}
 
-export { pool, connectDB };
+// Exporta a instância do Sequelize e a função de conexão
+module.exports = {
+  sequelize,
+  connectDB
+};

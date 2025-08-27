@@ -19,7 +19,7 @@ const Car = db.define('Car', {
     allowNull: true,
   },
 }, {
-  tableName: 'cars',
+  tableName: 'carro',
   timestamps: true,
 });
 

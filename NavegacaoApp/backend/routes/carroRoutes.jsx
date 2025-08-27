@@ -16,7 +16,7 @@ router.post('/register', async (req, res) => {
 
   try {
     const result = await pool.query(
-      'INSERT INTO cars (model, brand, year) VALUES ($1, $2, $3) RETURNING *',
+      'INSERT INTO carro (model, brand, year) VALUES ($1, $2, $3) RETURNING *',
       [model, brand, year]
     );
     res.status(201).json(result.rows[0]);

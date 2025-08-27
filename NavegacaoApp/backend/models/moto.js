@@ -19,7 +19,7 @@ const Moto = db.define('Moto', {
     allowNull: true,
   },
 }, {
-  tableName: 'motos',
+  tableName: 'moto',
   timestamps: true,
 });
 
