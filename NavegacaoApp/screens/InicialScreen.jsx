@@ -9,6 +9,8 @@ import {
   Image,
 } from "react-native";
 
+
+
 export default function HomeScreen({ navigation }) {
   const [search, setSearch] = useState("");
 

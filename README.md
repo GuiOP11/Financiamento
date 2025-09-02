@@ -8,10 +8,11 @@ npx expo start
 npm install expo-sqlite
 # ou
 yarn add expo-sqlite
+npm install expo-sqlite
 
 
-
-
+npm install @react-navigation/native@^6.1.0
+npm install @react-navigation/native-stack@^6.9.0
 
 
 

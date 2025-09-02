@@ -8,7 +8,8 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = () => {
     // Alerta de sucesso para simular o login
     Alert.alert('Sucesso', 'Login realizado!');
-    // Aqui é onde a lógica de conexão com o backend será implementada
+    // Navega para a tela inicial após login
+    navigation.navigate('Inicial');
   };
 
   return (
@@ -36,13 +37,12 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
       
-      
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Inicial')}>
-        <Text style={styles.buttonText}>Ir para Tela Inicial</Text>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Inicial')}>
+        <Text style={styles.secondaryButtonText}>Ir para Tela Inicial</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CadastroCarro')}>
-        <Text style={styles.buttonText}>Cadastrar Carro</Text>
+      <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('CadastroCarro')}>
+        <Text style={styles.secondaryButtonText}>Cadastrar Carro</Text>
       </TouchableOpacity>
       
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>    
@@ -87,7 +87,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
   },
+  secondaryButton: {
+    width: '100%',
+    backgroundColor: '#8A9A5B',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
   buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  secondaryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
