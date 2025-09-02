@@ -7,6 +7,7 @@ import InicialScreen from '../screens/InicialScreen';
 import CadastroScreen from '../screens/CadastroScreen';
 import CarDetailsScreen from '../screens/CarDetailsScreen';
 import CadastroCarroScreen from '../screens/CadastroCarroScreen'; 
+import FinanciamentoScreen from "../screens/FinanciamentoScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,12 +35,13 @@ export default function app() {
           component={CarDetailsScreen} 
           options={{ title: 'Detalhes do Carro' }} 
         />
-        {/* Adicionei a sua nova tela de Cadastro de Carro aqui! */}
+      
         <Stack.Screen 
           name="CadastroCarro" 
           component={CadastroCarroScreen} 
           options={{ headerShown: false }} // Ou customize como desejar
         />
+        <Stack.Screen name="Financiamento" component={FinanciamentoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
