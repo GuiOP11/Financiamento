@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   carImage: {
     width: "100%",
-    height: 180,
+    height: 300,
   },
   cardInfo: {
     padding: 10,
