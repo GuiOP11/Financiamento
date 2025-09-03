@@ -1,16 +1,36 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useSQLiteContext } from 'expo-sqlite';
+import { usuarioDatabase } from '../database/initializeDatabase';
 
 export default function CadastroScreen({ navigation }) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [saldo, setSaldo] = useState('');
+  const database = useSQLiteContext();
 
-  const handleCadastro = () => {
-    // Alerta de sucesso para simular o cadastro
-    Alert.alert('Sucesso', 'Cadastro realizado!');
-    // Aqui você pode conectar com seu backend
+  const handleCadastro = async () => {
+    if (!nome || !email || !senha) {
+      Alert.alert('Erro', 'Preencha todos os campos obrigatórios');
+      return;
+    }
+
+    const usuario = {
+      nome,
+      email,
+      senha,
+      saldo: saldo ? parseFloat(saldo) : 0
+    };
+
+    const resultado = await usuarioDatabase.cadastrarUsuario(database, usuario);
+    
+    if (resultado.success) {
+      Alert.alert('Sucesso', 'Cadastro realizado!');
+      navigation.navigate('Login');
+    } else {
+      Alert.alert('Erro', resultado.error);
+    }
   };
 
   return (
@@ -19,22 +39,23 @@ export default function CadastroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Nome"
+        placeholder="Nome *"
         value={nome}
         onChangeText={setNome}
       />
 
       <TextInput
         style={styles.input}
-        placeholder="E-mail"
+        placeholder="E-mail *"
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
+      
       <TextInput
         style={styles.input}
-        placeholder="Senha"
+        placeholder="Senha *"
         value={senha}
         onChangeText={setSenha}
         secureTextEntry
@@ -42,7 +63,7 @@ export default function CadastroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Coloque seu saldo"
+        placeholder="Saldo inicial (opcional)"
         value={saldo}
         onChangeText={setSaldo}
         keyboardType="numeric"
@@ -55,7 +76,6 @@ export default function CadastroScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.link}>Já tem conta? Faça login</Text>
       </TouchableOpacity>
-      
     </View>
   );
 }
@@ -65,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff4dbff', // Mantido o mesmo padrão de cor de fundo
+    backgroundColor: '#fff4dbff',
     padding: 20,
   },
   title: {
@@ -84,7 +104,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#0b4200ff', // Cor de fundo do botão
+    backgroundColor: '#0b4200ff',
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
@@ -92,13 +112,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   buttonText: {
-    color: '#FFFFFF', // Cor do texto do botão
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
   link: {
     marginTop: 16,
-    color: '#8A9A5B', // Mantido o mesmo padrão de cor do link
+    color: '#8A9A5B',
     textDecorationLine: 'underline',
   },
 });

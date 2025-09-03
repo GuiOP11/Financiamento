@@ -1,15 +1,27 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useSQLiteContext } from 'expo-sqlite';
+import { usuarioDatabase } from '../database/initializeDatabase';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const database = useSQLiteContext();
 
-  const handleLogin = () => {
-    // Alerta de sucesso para simular o login
-    Alert.alert('Sucesso', 'Login realizado!');
-    // Navega para a tela inicial após login
-    navigation.navigate('Inicial');
+  const handleLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert('Erro', 'Preencha todos os campos');
+      return;
+    }
+
+    const resultado = await usuarioDatabase.fazerLogin(database, email, senha);
+    
+    if (resultado.success) {
+      Alert.alert('Sucesso', 'Login realizado!');
+      navigation.navigate('Inicial', { usuario: resultado.usuario });
+    } else {
+      Alert.alert('Erro', resultado.error);
+    }
   };
 
   return (
@@ -37,24 +49,12 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.buttonText}>Entrar</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('Inicial')}>
-        <Text style={styles.secondaryButtonText}>Ir para Tela Inicial</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity style={styles.secondaryButton} onPress={() => navigation.navigate('CadastroCarro')}>
-        <Text style={styles.secondaryButtonText}>Cadastrar Carro</Text>
-      </TouchableOpacity>
-      
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>    
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
     </View>
   );
 }
-
-// ---
-// Estilos
-// ---
 
 const styles = StyleSheet.create({
   container: {
@@ -87,21 +87,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
   },
-  secondaryButton: {
-    width: '100%',
-    backgroundColor: '#8A9A5B',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
   buttonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  secondaryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',

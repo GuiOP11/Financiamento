@@ -1,62 +1,99 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
+import { useSQLiteContext } from 'expo-sqlite';
+import { carroDatabase } from '../database/initializeDatabase';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CadastroCarroScreen({ navigation }) {
-  // Estados para armazenar os dados do carro
   const [modelo, setModelo] = useState('');
   const [marca, setMarca] = useState('');
   const [cor, setCor] = useState('');
   const [ano, setAno] = useState('');
-  const [disponivel, setDisponivel] = useState('');
+  const [disponivel, setDisponivel] = useState('sim');
   const [km, setKm] = useState('');
   const [placa, setPlaca] = useState('');
+  const [preco, setPreco] = useState('');
+  const [imagem, setImagem] = useState(null);
+  const database = useSQLiteContext();
 
-  // Função para lidar com o cadastro do carro
-  const handleCadastroCarro = () => {
-    // Verificação básica dos campos
-    if (!modelo || !marca || !ano || !placa) {
-      Alert.alert('Erro', 'Por favor, preencha todos os campos obrigatórios: Modelo, Marca, Ano e Placa.');
+  const selecionarImagem = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (status !== 'granted') {
+      Alert.alert('Permissão necessária', 'Precisamos de acesso à sua galeria');
       return;
     }
 
-    // Aqui você pode conectar com seu backend ou banco de dados (ex: Firestore)
-    // Exemplo de objeto de dados do carro:
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.8,
+    });
+
+    if (!result.canceled) {
+      setImagem(result.assets[0].uri);
+    }
+  };
+
+  const handleCadastroCarro = async () => {
+    if (!modelo || !marca || !ano || !placa || !preco) {
+      Alert.alert('Erro', 'Preencha todos os campos obrigatórios: Modelo, Marca, Ano, Placa e Preço');
+      return;
+    }
+
     const carroData = {
-      modelo: modelo,
-      marca: marca,
-      cor: cor,
-      ano: parseInt(ano), 
-      disponivel: disponivel,
-      km: km,
-      placa: placa,
+      modelo,
+      marca,
+      cor,
+      ano: parseInt(ano),
+      disponivel,
+      km: km ? parseInt(km) : 0,
+      placa: placa.toUpperCase(),
+      preco: parseFloat(preco),
+      imagem
     };
 
-    // Demonstrativo de sucesso
-    Alert.alert('Sucesso', `Carro ${modelo} (${placa}) cadastrado!`);
+    const resultado = await carroDatabase.cadastrarCarro(database, carroData);
+    
+    if (resultado.success) {
+      Alert.alert('Sucesso', `Carro ${modelo} cadastrado!`);
+      
+      // Limpa os campos
+      setModelo('');
+      setMarca('');
+      setCor('');
+      setAno('');
+      setDisponivel('sim');
+      setKm('');
+      setPlaca('');
+      setPreco('');
+      setImagem(null);
 
-    // Aqui você enviaria 'carroData' para o seu banco de dados
-    console.log('Dados do carro para cadastro:', carroData);
-
-    // Limpa os campos após o envio
-    setModelo('');
-    setMarca('');
-    setCor('');
-    setAno('');
-    setDisponivel('');
-    setKm('');
-    setPlaca('');
-
-    // Exemplo de navegação para a tela inicial após o cadastro
-    // navigation.navigate('Inicial'); 
+      // Navega de volta para a tela inicial
+      navigation.navigate('Inicial');
+    } else {
+      Alert.alert('Erro', resultado.error);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Cadastrar Carro</Text>
+
+      {imagem && (
+        <Image source={{ uri: imagem }} style={styles.imagemPreview} />
+      )}
+
+      <TouchableOpacity style={styles.imageButton} onPress={selecionarImagem}>
+        <Text style={styles.imageButtonText}>
+          {imagem ? 'Alterar Imagem' : 'Selecionar Imagem'}
+        </Text>
+      </TouchableOpacity>
 
       <TextInput
         style={styles.input}
-        placeholder="Modelo"
+        placeholder="Modelo *"
         value={modelo}
         onChangeText={setModelo}
         autoCapitalize="words"
@@ -64,7 +101,7 @@ export default function CadastroCarroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Marca"
+        placeholder="Marca *"
         value={marca}
         onChangeText={setMarca}
         autoCapitalize="words"
@@ -75,16 +112,15 @@ export default function CadastroCarroScreen({ navigation }) {
         placeholder="Cor"
         value={cor}
         onChangeText={setCor}
-        autoCapitalize="words"
       />
 
       <TextInput
         style={styles.input}
-        placeholder="Ano"
+        placeholder="Ano *"
         value={ano}
         onChangeText={setAno}
         keyboardType="numeric"
-        maxLength={4} 
+        maxLength={4}
       />
 
       <TextInput
@@ -96,7 +132,7 @@ export default function CadastroCarroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Km"
+        placeholder="Quilometragem"
         value={km}
         onChangeText={setKm}
         keyboardType="numeric"
@@ -104,13 +140,21 @@ export default function CadastroCarroScreen({ navigation }) {
 
       <TextInput
         style={styles.input}
-        placeholder="Placa"
+        placeholder="Placa *"
         value={placa}
         onChangeText={setPlaca}
         autoCapitalize="characters"
-        maxLength={7} 
+        maxLength={7}
       />
-      
+
+      <TextInput
+        style={styles.input}
+        placeholder="Preço * (R$)"
+        value={preco}
+        onChangeText={setPreco}
+        keyboardType="numeric"
+      />
+
       <TouchableOpacity style={styles.button} onPress={handleCadastroCarro}>
         <Text style={styles.buttonText}>Cadastrar Carro</Text>
       </TouchableOpacity>
@@ -118,21 +162,38 @@ export default function CadastroCarroScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.link}>Voltar</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff4dbff', // Padrão de cor de fundo
+    backgroundColor: '#fff4dbff',
     padding: 20,
   },
   title: {
     fontSize: 32,
     marginBottom: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  imagemPreview: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 16,
+    resizeMode: 'cover',
+  },
+  imageButton: {
+    backgroundColor: '#8A9A5B',
+    padding: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  imageButtonText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
   input: {
@@ -143,24 +204,26 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     borderRadius: 5,
+    backgroundColor: '#fff',
   },
   button: {
     width: '100%',
-    backgroundColor: '#0b4200ff', // Padrão de cor do botão
-    padding: 10,
+    backgroundColor: '#0b4200ff',
+    padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
   },
   buttonText: {
-    color: '#FFFFFF', // Cor do texto do botão
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
   link: {
     marginTop: 16,
-    color: '#8A9A5B', // Padrão de cor do link
+    color: '#8A9A5B',
     textDecorationLine: 'underline',
+    textAlign: 'center',
   },
 });

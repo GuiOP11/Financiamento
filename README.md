@@ -9,6 +9,7 @@ npm install expo-sqlite
 # ou
 yarn add expo-sqlite
 npm install expo-sqlite
+npx expo install expo-image-picker
 
 
 npm install @react-navigation/native@^6.1.0
