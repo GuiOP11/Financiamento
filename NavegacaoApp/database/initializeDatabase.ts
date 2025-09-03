@@ -14,7 +14,7 @@ export async function initializeDatabase(database) {
       );
     `);
 
-      await database.execAsync('DROP TABLE IF EXISTS carros;');
+    await database.execAsync('DROP TABLE IF EXISTS carros;');
     
     await database.execAsync(`
       CREATE TABLE carros (
@@ -31,7 +31,6 @@ export async function initializeDatabase(database) {
         data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
-
 
     console.log('Database inicializado com sucesso!');
   } catch (error) {
@@ -130,5 +129,161 @@ export const carroDatabase = {
     } catch (error) {
       return null;
     }
+  },
+
+  // Buscar carros por marca
+  async buscarCarrosPorMarca(database, marca) {
+    try {
+      return await database.getAllAsync(
+        'SELECT * FROM carros WHERE marca LIKE ? ORDER BY modelo',
+        [`%${marca}%`]
+      );
+    } catch (error) {
+      return [];
+    }
+  },
+
+  // Atualizar carro
+  async atualizarCarro(database, id, carroData) {
+    try {
+      await database.runAsync(
+        'UPDATE carros SET modelo = ?, marca = ?, ano = ?, placa = ?, cor = ?, disponivel = ?, km = ?, preco = ?, imagem = ? WHERE id = ?',
+        [carroData.modelo, carroData.marca, carroData.ano, carroData.placa, carroData.cor, carroData.disponivel, carroData.km, carroData.preco, carroData.imagem, id]
+      );
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  },
+
+  // Excluir carro
+  async excluirCarro(database, id) {
+    try {
+      await database.runAsync('DELETE FROM carros WHERE id = ?', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
   }
 };
+
+// FUNÇÕES DE VISUALIZAÇÃO E DEBUG (adicionadas)
+// Função para visualizar todos os usuários
+export async function visualizarUsuarios(database) {
+  try {
+    const usuarios = await database.getAllAsync('SELECT * FROM usuarios');
+    console.log('📊 USUÁRIOS CADASTRADOS:');
+    console.table(usuarios);
+    return usuarios;
+  } catch (error) {
+    console.error('Erro ao visualizar usuários:', error);
+    return [];
+  }
+}
+
+// Função para visualizar todos os carros
+export async function visualizarCarros(database) {
+  try {
+    const carros = await database.getAllAsync('SELECT * FROM carros');
+    console.log('🚗 CARROS CADASTRADOS:');
+    console.table(carros);
+    return carros;
+  } catch (error) {
+    console.error('Erro ao visualizar carros:', error);
+    return [];
+  }
+}
+
+// Função para ver estrutura das tabelas
+export async function verEstruturaTabelas(database) {
+  try {
+    const tabelas = await database.getAllAsync(
+      "SELECT name FROM sqlite_master WHERE type='table'"
+    );
+    console.log('📋 TABELAS DO BANCO:');
+    
+    for (const tabela of tabelas) {
+      const estrutura = await database.getAllAsync(
+        `PRAGMA table_info(${tabela.name})`
+      );
+      console.log(`\nEstrutura da tabela ${tabela.name}:`);
+      console.table(estrutura);
+    }
+    
+    return tabelas;
+  } catch (error) {
+    console.error('Erro ao ver estrutura:', error);
+    return [];
+  }
+}
+
+// Função para contar registros
+export async function contarRegistros(database) {
+  try {
+    const usuariosCount = await database.getFirstAsync('SELECT COUNT(*) as total FROM usuarios');
+    const carrosCount = await database.getFirstAsync('SELECT COUNT(*) as total FROM carros');
+    
+    console.log('📈 TOTAL DE REGISTROS:');
+    console.log(`- Usuários: ${usuariosCount.total}`);
+    console.log(`- Carros: ${carrosCount.total}`);
+    
+    return { usuarios: usuariosCount.total, carros: carrosCount.total };
+  } catch (error) {
+    console.error('Erro ao contar registros:', error);
+    return { usuarios: 0, carros: 0 };
+  }
+}
+
+// Função para limpar todas as tabelas (apenas para desenvolvimento)
+export async function limparBancoDados(database) {
+  try {
+    await database.execAsync('DELETE FROM usuarios');
+    await database.execAsync('DELETE FROM carros');
+    console.log('🗑️ Banco de dados limpo!');
+    return { success: true };
+  } catch (error) {
+    console.error('Erro ao limpar banco:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Função para popular com dados de exemplo
+export async function popularDadosExemplo(database) {
+  try {
+    // Dados de exemplo para carros
+    const carrosExemplo = [
+      {
+        modelo: 'Gol',
+        marca: 'Volkswagen',
+        ano: 2023,
+        placa: 'ABC1234',
+        cor: 'Vermelho',
+        disponivel: 'sim',
+        km: 0,
+        preco: 45000,
+        imagem: 'https://example.com/gol.jpg'
+      },
+      {
+        modelo: 'Civic',
+        marca: 'Honda',
+        ano: 2024,
+        placa: 'XYZ5678',
+        cor: 'Prata',
+        disponivel: 'sim',
+        km: 100,
+        preco: 120000,
+        imagem: 'https://example.com/civic.jpg'
+      }
+    ];
+
+    for (const carro of carrosExemplo) {
+      await carroDatabase.cadastrarCarro(database, carro);
+    }
+
+    console.log('📦 Dados de exemplo inseridos!');
+    return { success: true };
+  } catch (error) {
+    console.error('Erro ao popular dados:', error);
+    return { success: false, error: error.message };
+  }
+}

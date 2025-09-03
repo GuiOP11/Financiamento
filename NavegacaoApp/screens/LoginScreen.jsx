@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useSQLiteContext } from 'expo-sqlite';
-import { usuarioDatabase } from '../database/initializeDatabase';
+import { usuarioDatabase, visualizarUsuarios, visualizarCarros, verEstruturaTabelas } from '../database/initializeDatabase';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -24,8 +24,29 @@ export default function LoginScreen({ navigation }) {
     }
   };
 
+  // Função para debug do banco de dados
+  const handleDebug = async () => {
+    try {
+      await verEstruturaTabelas(database);
+      await visualizarUsuarios(database);
+      await visualizarCarros(database);
+      Alert.alert('Debug', 'Dados do banco exibidos no console!');
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao acessar banco de dados');
+      console.error('Erro no debug:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      {/* Botão de debug */}
+      <TouchableOpacity 
+        style={styles.debugButton}
+        onPress={handleDebug}
+      >
+        <Text style={styles.debugText}>👁️ Ver Banco</Text>
+      </TouchableOpacity>
+
       <Text style={styles.title}>Login</Text>
       
       <TextInput
@@ -52,6 +73,17 @@ export default function LoginScreen({ navigation }) {
       <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>    
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
+
+      {/* Botão extra para teste rápido */}
+      <TouchableOpacity 
+        style={styles.testButton}
+        onPress={() => {
+          setEmail('teste@email.com');
+          setSenha('123456');
+        }}
+      >
+        <Text style={styles.testText}>Preencher Teste</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -77,6 +109,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     paddingHorizontal: 8,
     borderRadius: 5,
+    backgroundColor: '#fff',
   },
   button: {
     width: '100%',
@@ -96,5 +129,29 @@ const styles = StyleSheet.create({
     marginTop: 16,
     color: '#8A9A5B',
     textDecorationLine: 'underline',
+  },
+  debugButton: {
+    position: 'absolute',
+    top: 40,
+    right: 20,
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    zIndex: 1000,
+  },
+  debugText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  testButton: {
+    marginTop: 20,
+    backgroundColor: '#8A9A5B',
+    padding: 8,
+    borderRadius: 5,
+  },
+  testText: {
+    color: '#fff',
+    fontSize: 12,
   },
 });
