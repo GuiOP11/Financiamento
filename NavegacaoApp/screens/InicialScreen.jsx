@@ -19,7 +19,7 @@ export default function HomeScreen({ navigation }) {
   // Carros padrão que já estavam no código
   const carrosPadrao = [
     {
-      id: "1",
+      id: "padrao_1",
       titulo: "Chevrolet Caravan",
       modelo: "Caravan",
       marca: "Chevrolet",
@@ -30,7 +30,7 @@ export default function HomeScreen({ navigation }) {
       placa: "ABC1D23"
     },
     {
-      id: "2",
+      id: "padrao_2",
       titulo: "Porsche 911",
       modelo: "911",
       marca: "Porsche",
@@ -41,7 +41,7 @@ export default function HomeScreen({ navigation }) {
       placa: "XYZ9W87"
     },
     {
-      id: "3",
+      id: "padrao_3",
       titulo: "BMW 320i",
       modelo: "320i",
       marca: "BMW",
@@ -52,7 +52,7 @@ export default function HomeScreen({ navigation }) {
       placa: "BMW3A45"
     },
     {
-      id: "4",
+      id: "padrao_4",
       titulo: "Chevrolet Chevette",
       modelo: "Chevette",
       marca: "Chevrolet",
@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }) {
       placa: "CHEV789"
     },
     {
-      id: "5",
+      id: "padrao_5",
       titulo: "Volkswagen Voyage",
       modelo: "Voyage",
       marca: "Volkswagen",
@@ -74,7 +74,7 @@ export default function HomeScreen({ navigation }) {
       placa: "VWG0A12"
     },
     {
-      id: "6",
+      id: "padrao_6",
       titulo: "Hyundai Azera",
       modelo: "Azera",
       marca: "Hyundai",
@@ -85,7 +85,7 @@ export default function HomeScreen({ navigation }) {
       placa: "HYU6B54"
     },
     {
-      id: "7",
+      id: "padrao_7",
       titulo: "Toyota Corolla",
       modelo: "Corolla",
       marca: "Toyota",
@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation }) {
       placa: "TOY7C89"
     },
     {
-      id: "8",
+      id: "padrao_8",
       titulo: "Chevrolet Onix",
       modelo: "Onix",
       marca: "Chevrolet",
@@ -107,7 +107,7 @@ export default function HomeScreen({ navigation }) {
       placa: "ONX8D23"
     },
     {
-      id: "9",
+      id: "padrao_9",
       titulo: "Volkswagen Jetta",
       modelo: "Jetta",
       marca: "Volkswagen",
@@ -124,15 +124,32 @@ export default function HomeScreen({ navigation }) {
     carregarCarros();
   }, []);
 
+  // Recarregar quando a tela receber foco
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      carregarCarros();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   const carregarCarros = async () => {
     try {
+      console.log('🔄 Carregando carros do banco...');
       const carrosDoBanco = await carroDatabase.buscarTodosCarros(database);
+      console.log('🚗 Carros do banco:', carrosDoBanco);
+      
+      // Adicionar prefixo aos IDs do banco para evitar conflitos
+      const carrosBancoFormatados = carrosDoBanco.map(carro => ({
+        ...carro,
+        id: `banco_${carro.id}` // Prefixo para diferenciar
+      }));
       
       // Combinar carros do banco com carros padrão
-      const todosCarros = [...carrosDoBanco, ...carrosPadrao];
+      const todosCarros = [...carrosBancoFormatados, ...carrosPadrao];
+      console.log('📦 Total de carros:', todosCarros.length);
       setCarros(todosCarros);
     } catch (error) {
-      console.error('Erro ao carregar carros:', error);
+      console.error('❌ Erro ao carregar carros:', error);
       // Se der erro, usa apenas os carros padrão
       setCarros(carrosPadrao);
     }
@@ -162,19 +179,17 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.cadastrarButtonText}>+ Cadastrar Novo Carro</Text>
       </TouchableOpacity>
 
-      {/* Categorias */}
-      <View style={styles.categories}>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Todos</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.categoryButton}>
-          <Text style={styles.categoryText}>Disponíveis</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Botão para recarregar */}
+      <TouchableOpacity 
+        style={styles.recarregarButton}
+        onPress={carregarCarros}
+      >
+        <Text style={styles.recarregarButtonText}>🔄 Recarregar</Text>
+      </TouchableOpacity>
 
       <FlatList
         data={filtrarCarros}
-        keyExtractor={(item) => item.id.toString() + item.placa}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
@@ -191,6 +206,7 @@ export default function HomeScreen({ navigation }) {
               </Text>
               <Text style={styles.carDetails}>
                 {item.ano} • {item.cor || 'Cor não informada'}
+                {item.id.startsWith('banco_') && ' • 🆕'}
               </Text>
               <Text style={styles.carPrice}>
                 R$ {item.preco?.toLocaleString('pt-BR')}
@@ -227,12 +243,24 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 8,
     alignItems: "center",
+    marginBottom: 10,
+  },
+  recarregarButton: {
+    backgroundColor: "#007bff",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
     marginBottom: 15,
   },
   cadastrarButtonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  recarregarButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 14,
   },
   categories: {
     flexDirection: "row",

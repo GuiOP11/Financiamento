@@ -74,7 +74,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.link}>Não tem conta? Cadastre-se</Text>
       </TouchableOpacity>
 
-      {/* Botão extra para teste rápido */}
+  
       <TouchableOpacity 
         style={styles.testButton}
         onPress={() => {
