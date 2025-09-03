@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   typeText: { color: "#222" },
   typeTextActive: { color: "#fff" },
   calcButton: {
-    backgroundColor: "#007bff",
+    backgroundColor: "#ff0000ff",
     padding: 12,
     marginTop: 12,
     borderRadius: 6,
