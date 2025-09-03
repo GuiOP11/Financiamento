@@ -87,10 +87,14 @@ function generateAmortizationSAC(principal, annualRatePercent, months) {
 
 export default function FinanciamentoScreen({ navigation, route }) {
   const carro = route?.params?.carro || null;
+  const usuario = route?.params?.usuario || null; // 👈 recebendo usuário logado
   const precoOriginal = carro?.preco ?? "R$ 0";
   const precoNumber = parseCurrency(precoOriginal);
 
-  const [entradaStr, setEntradaStr] = useState("0");
+  // se o usuário tiver saldo, já usar como entrada inicial
+  const [entradaStr, setEntradaStr] = useState(
+    usuario ? String(usuario.saldo) : "0"
+  );
   const [taxaStr, setTaxaStr] = useState("10"); // taxa anual default 10%
   const [prazoStr, setPrazoStr] = useState("48"); // meses default
   const [tipo, setTipo] = useState("PRICE"); // 'PRICE' ou 'SAC'
@@ -104,7 +108,10 @@ export default function FinanciamentoScreen({ navigation, route }) {
     const principal = precoNumber - entrada;
 
     if (principal <= 0) {
-      Alert.alert("Entrada inválida", "A entrada deve ser menor que o preço do carro.");
+      Alert.alert(
+        "Entrada inválida",
+        "A entrada deve ser menor que o preço do carro."
+      );
       return;
     }
     if (prazo <= 0) {
@@ -134,6 +141,13 @@ export default function FinanciamentoScreen({ navigation, route }) {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Financiamento</Text>
+
+      {usuario && (
+        <View style={styles.card}>
+          <Text style={styles.label}>Saldo disponível</Text>
+          <Text style={styles.value}>{formatBRL(usuario.saldo)}</Text>
+        </View>
+      )}
 
       {carro && (
         <View style={styles.card}>
@@ -177,13 +191,21 @@ export default function FinanciamentoScreen({ navigation, route }) {
           style={[styles.typeButton, tipo === "PRICE" && styles.typeButtonActive]}
           onPress={() => setTipo("PRICE")}
         >
-          <Text style={tipo === "PRICE" ? styles.typeTextActive : styles.typeText}>PRICE</Text>
+          <Text
+            style={tipo === "PRICE" ? styles.typeTextActive : styles.typeText}
+          >
+            PRICE
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.typeButton, tipo === "SAC" && styles.typeButtonActive]}
           onPress={() => setTipo("SAC")}
         >
-          <Text style={tipo === "SAC" ? styles.typeTextActive : styles.typeText}>SAC</Text>
+          <Text
+            style={tipo === "SAC" ? styles.typeTextActive : styles.typeText}
+          >
+            SAC
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -193,8 +215,12 @@ export default function FinanciamentoScreen({ navigation, route }) {
 
       {resultado && (
         <View style={styles.resultBox}>
-          <Text style={styles.resultText}>Principal: {formatBRL(resultado.principal)}</Text>
-          <Text style={styles.resultText}>Parcela (1ª): {formatBRL(resultado.parcela)}</Text>
+          <Text style={styles.resultText}>
+            Principal: {formatBRL(resultado.principal)}
+          </Text>
+          <Text style={styles.resultText}>
+            Parcela (1ª): {formatBRL(resultado.parcela)}
+          </Text>
           <Text style={styles.resultText}>
             Total pago: {formatBRL(resultado.totalPaid)}
           </Text>
@@ -202,7 +228,9 @@ export default function FinanciamentoScreen({ navigation, route }) {
             Juros totais: {formatBRL(resultado.totalInterest)}
           </Text>
 
-          <Text style={[styles.subHeader, { marginTop: 12 }]}>Primeiras parcelas</Text>
+          <Text style={[styles.subHeader, { marginTop: 12 }]}>
+            Primeiras parcelas
+          </Text>
           <View style={styles.tableHeader}>
             <Text style={styles.col}>#</Text>
             <Text style={styles.col}>Pago</Text>
@@ -248,7 +276,10 @@ export default function FinanciamentoScreen({ navigation, route }) {
         </View>
       )}
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
+      >
         <Text style={styles.backText}>Voltar</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -258,7 +289,12 @@ export default function FinanciamentoScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 12, backgroundColor: "#fff" },
   header: { fontSize: 22, fontWeight: "bold", marginBottom: 10 },
-  card: { padding: 10, backgroundColor: "#f8f8f8", borderRadius: 8, marginBottom: 10 },
+  card: {
+    padding: 10,
+    backgroundColor: "#f8f8f8",
+    borderRadius: 8,
+    marginBottom: 10,
+  },
   label: { fontSize: 14, marginTop: 8, marginBottom: 4 },
   value: { fontSize: 16, fontWeight: "bold" },
   input: {
@@ -289,13 +325,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   calcButtonText: { color: "#fff", fontWeight: "bold" },
-  resultBox: { marginTop: 16, padding: 10, backgroundColor: "#fafafa", borderRadius: 8 },
+  resultBox: {
+    marginTop: 16,
+    padding: 10,
+    backgroundColor: "#fafafa",
+    borderRadius: 8,
+  },
   resultText: { fontSize: 15, marginBottom: 6 },
   subHeader: { fontWeight: "bold" },
   tableHeader: { flexDirection: "row", marginTop: 8, marginBottom: 6 },
   tableRow: { flexDirection: "row", marginBottom: 4 },
   col: { flex: 1, fontSize: 12 },
-  smallButton: { marginTop: 8, padding: 8, backgroundColor: "#eee", borderRadius: 6, alignItems: "center" },
+  smallButton: {
+    marginTop: 8,
+    padding: 8,
+    backgroundColor: "#eee",
+    borderRadius: 6,
+    alignItems: "center",
+  },
   smallButtonText: { color: "#333" },
   backButton: { marginTop: 12, alignItems: "center" },
   backText: { color: "#007bff" },
