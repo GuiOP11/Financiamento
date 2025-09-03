@@ -228,7 +228,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#fff4dbff",
     padding: 10,
   },
   searchBar: {
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   categoryButton: {
-    backgroundColor: "#ff0000",
+    backgroundColor: "#0b4200ff",
     paddingVertical: 8,
     paddingHorizontal: 16,
     borderRadius: 20,
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   carImage: {
     width: "100%",
-    height: 180,
+    height: 300,
   },
   cardInfo: {
     padding: 10,
@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
   },
   carPrice: {
     fontSize: 15,
-    color: "#ff0000",
+    color: "#0b4200ff",
     fontWeight: "bold",
     marginBottom: 4,
   },

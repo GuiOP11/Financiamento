@@ -34,11 +34,11 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff", padding: 10 },
   image: { width: "100%", height: 250, borderRadius: 10 },
   title: { fontSize: 22, fontWeight: "bold", marginTop: 10 },
-  price: { fontSize: 20, color: "#ff0000", marginVertical: 10 },
+  price: { fontSize: 20, color: "#0b4200ff", marginVertical: 10 },
   specs: { marginTop: 15 },
   spec: { fontSize: 16, marginBottom: 5 },
   button: {
-    backgroundColor: "#ff0000",
+    backgroundColor: "#0b4200ff",
     paddingVertical: 12,
     borderRadius: 8,
     marginTop: 20,
